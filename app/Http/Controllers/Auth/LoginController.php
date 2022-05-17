@@ -49,19 +49,19 @@ class LoginController extends Controller
     public function handleGoogleCallback()
     {
         $userdata = Socialite::driver('google')->stateless()->user();
-        dd($userdata);
-//        $user = User::updateOrCreate([
-//            'id' => $userdata->id,
-//        ], [
-//            'name' => $userdata->name,
-//            'email' => $userdata->email,
-        //   'github_token' => $userdata->token,
-        // 'github_refresh_token' => $userdata->refreshToken,
-//        ]);
+       // dd($userdata);
+        $user = User::updateOrCreate([
+            'id' => $userdata->id,
+        ], [
+            'name' => $userdata->name,
+            'email' => $userdata->email,
+          // 'github_token' => $userdata->token,
+         //'github_refresh_token' => $userdata->refreshToken,
+        ]);
 
-        //Auth::login($user);
+        Auth::login($user);
 
-      //  return redirect('home');
+        return redirect('home');
         // $this->_registerOrLoginUser($user);
 //
 //        // Return home after login
