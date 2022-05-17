@@ -61,7 +61,7 @@ class LoginController extends Controller
 
         //Auth::login($user);
 
-        return redirect('home');
+      //  return redirect('home');
         // $this->_registerOrLoginUser($user);
 //
 //        // Return home after login
