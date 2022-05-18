@@ -48,38 +48,25 @@ class LoginController extends Controller
     }
     public function handleGoogleCallback()
     {
-        $userdata = Socialite::driver('google')->stateless()->user();
-       // dd($userdata);
-        $user = User::updateOrCreate([
-            'id' => $userdata->id,
-        ], [
-            'name' => $userdata->name,
-            'email' => $userdata->email,
-          // 'github_token' => $userdata->token,
-         //'github_refresh_token' => $userdata->refreshToken,
-        ]);
-
-        Auth::login($user);
-
-        return redirect('home');
-        // $this->_registerOrLoginUser($user);
+        $user = Socialite::driver('google')->stateless()->user();
+         $this->_registerOrLoginUser($user);
 //
 //        // Return home after login
-//        return redirect()->route('home');
+        return redirect()->route('home');
     }
-//    public function _registerOrLoginUser($data)
-//    {
-//        $user = User::where('email', '=', $data->email)->first();
-//        if (!$user) {
-//            $user = new User();
-//            $user->name = $data->name;
-//            $user->email = $data->email;
-//            //$user->password = $data->password;
-//            $user->save();
-//        }
-//
-//        Auth::login($user);
-//    }
+    protected function _registerOrLoginUser($data)
+    {
+        $user = User::where('email', '=', $data->email)->first();
+        if (!$user) {
+            $user = new User();
+            $user->name = $data->name;
+            $user->email = $data->email;
+            $user->provider_id = $data->id;
+            $user->avatar = $data->avatar;
+            $user->save();
+        }
+        Auth::login($user);
+    }
 
     // Facebook login
     public function redirectToFacebook()
@@ -93,17 +80,6 @@ class LoginController extends Controller
         $userdata = Socialite::driver('facebook')->user();
       //  dd($userdata);
         // Return home after login
-       // return redirect()->route('home');
-        $user = User::updateOrCreate([
-            'id' => $userdata->id,
-        ], [
-            'name' => $userdata->name,
-            'email' => $userdata->email,
-            // 'github_token' => $userdata->token,
-            //'github_refresh_token' => $userdata->refreshToken,
-        ]);
-
-        Auth::login($user);
-        return redirect('home');
+       //return redirect()->route('home');
     }
 }
