@@ -50,9 +50,22 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('google')->stateless()->user();
          $this->_registerOrLoginUser($user);
-//
-//        // Return home after login
-        return redirect()->route('home');
+       // Return home after login
+     //   return redirect()->route('home');
+    }
+    // Facebook login
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    // Facebook callback
+    public function handleFacebookCallback()
+    {
+        $user = Socialite::driver('facebook')->stateless()->user();
+        $this->_registerOrLoginUser($user);
+        // Return home after login
+      //  return redirect()->route('home');
     }
     protected function _registerOrLoginUser($data)
     {
@@ -66,20 +79,5 @@ class LoginController extends Controller
             $user->save();
         }
         Auth::login($user);
-    }
-
-    // Facebook login
-    public function redirectToFacebook()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    // Facebook callback
-    public function handleFacebookCallback()
-    {
-        $userdata = Socialite::driver('facebook')->user();
-      //  dd($userdata);
-        // Return home after login
-       //return redirect()->route('home');
     }
 }
