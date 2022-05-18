@@ -91,8 +91,19 @@ class LoginController extends Controller
     public function handleFacebookCallback()
     {
         $userdata = Socialite::driver('facebook')->user();
-        dd($userdata);
+      //  dd($userdata);
         // Return home after login
        // return redirect()->route('home');
+        $user = User::updateOrCreate([
+            'id' => $userdata->id,
+        ], [
+            'name' => $userdata->name,
+            'email' => $userdata->email,
+            // 'github_token' => $userdata->token,
+            //'github_refresh_token' => $userdata->refreshToken,
+        ]);
+
+        Auth::login($user);
+        return redirect('home');
     }
 }
