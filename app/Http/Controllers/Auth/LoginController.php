@@ -76,7 +76,7 @@ class LoginController extends Controller
             $user->email = $data->email;
             $user->provider_id = $data->id;
             $user->avatar = $data->avatar;
-            $user->password = Hash::make(Str::random(24));
+            //$user->password = Hash::make(Str::random(24));
             $user->save();
         }
      //  Auth::login($user);
