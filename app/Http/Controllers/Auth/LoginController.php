@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Str;
 class LoginController extends Controller
 {
     /*
@@ -75,8 +76,9 @@ class LoginController extends Controller
             $user->email = $data->email;
             $user->provider_id = $data->id;
             $user->avatar = $data->avatar;
+            $user->password = Hash::make(Str::random(24));
             $user->save();
         }
-        Auth::login($user);
+       Auth::login($user);
     }
 }
