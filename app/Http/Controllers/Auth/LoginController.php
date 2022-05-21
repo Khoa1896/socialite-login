@@ -11,11 +11,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Actions\Users\CreateUser;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\Users\RegisterRequest;
-use App\Http\Requests\Users\UpdateProfileRequest;
-use App\Http\Resources\UserResource;
 use App\Http\Response;
 class LoginController extends Controller
 {
@@ -56,7 +51,8 @@ class LoginController extends Controller
     public function handleGoogleCallback()
     {
         $user = Socialite::driver('google')->stateless()->user();
-         $this->_registerOrLoginUser($user);
+        dd($user);
+        // $this->_registerOrLoginUser($user);
        // Return home after login
      //   return redirect()->route('home');
     }
@@ -102,8 +98,8 @@ class LoginController extends Controller
         return Response::ok([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => UserResource::make($user)
+           // 'expires_in' => auth()->factory()->getTTL() * 60,
+        //    'user' => UserResource::make($user)
         ]);
     }
     public function socialLogin()
@@ -114,24 +110,24 @@ class LoginController extends Controller
             return Response::unauthorized('unauthorized', 'Failed!');
         }
 
-        $user = User::whereEmail($socialUser->email)->first();
+        $user = User::where('email', '=', $socialUser->email)->first();
 
         if (!$user) {
-            $user = CreateUser::invoke([
+            $user = new User([
                 'email' => $socialUser->email,
                 'name' => $socialUser->name,
                 'password' => substr(md5(time()), 0, 12),
-                'email_verified_at' => Carbon::now()
+            //    'email_verified_at' => Carbon::now()
             ]);
         } else {
             if (!$user->hasVerifiedEmail()) {
                 $user->markEmailAsVerified();
-                event(new Verified($user));
+               // event(new Verified($user));
             }
         }
 
         $socialAccounts = $user->socialAccounts()->firstOrCreate([
-            'provider' => $provider
+            'provider' => 'google'
         ], [
             'social_id' => $socialUser->id
         ]);
