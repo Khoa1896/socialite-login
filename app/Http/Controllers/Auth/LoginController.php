@@ -90,9 +90,9 @@ class LoginController extends Controller
 
 
 
-    public function getSocialRedirect($provider)
+    public function getSocialRedirect()
     {
-        $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();;
+        $url = Socialite::driver('google')->stateless()->redirect()->getTargetUrl();;
         return Response::ok([
             'url' => $url
         ]);
@@ -106,9 +106,9 @@ class LoginController extends Controller
             'user' => UserResource::make($user)
         ]);
     }
-    public function socialLogin($provider)
+    public function socialLogin()
     {
-        $socialUser = Socialite::driver($provider)->stateless()->user();
+        $socialUser = Socialite::driver('google')->stateless()->user();
 
         if (!$socialUser->token) {
             return Response::unauthorized('unauthorized', 'Failed!');
