@@ -13,7 +13,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6 offset-md-2">
                                     <a href="{{ route('login.google') }}" class="btn btn-danger btn-block">Login with Google</a>
-                                    <a href="{{ route('login.facebook') }}" class="btn btn-primary btn-block">Login with Facebook</a>
+                                    <a href="" class="btn btn-primary btn-block">Login with Facebook</a>
                                 </div>
                             </div>
                             <div class="row mb-3">
