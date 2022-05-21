@@ -79,6 +79,6 @@ class LoginController extends Controller
             //$user->password = Hash::make(Str::random(24));
             $user->save();
         }
-     //  Auth::login($user);
+      // Auth::login($user);
     }
 }
