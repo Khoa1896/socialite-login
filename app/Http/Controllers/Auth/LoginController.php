@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Actions\Users\CreateUser;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\Users\RegisterRequest;
+use App\Http\Requests\Users\UpdateProfileRequest;
+use App\Http\Resources\UserResource;
+use App\Http\Response;
 class LoginController extends Controller
 {
     /*
@@ -80,5 +86,50 @@ class LoginController extends Controller
             $user->save();
         }
       // Auth::login($user);
+    }
+
+
+
+    public function getSocialRedirect($provider)
+    {
+        $url = Socialite::driver($provider)->stateless()->redirect()->getTargetUrl();;
+        return Response::ok([
+            'url' => $url
+        ]);
+    }
+    public function socialLogin($provider)
+    {
+        $socialUser = Socialite::driver($provider)->stateless()->user();
+
+        if (!$socialUser->token) {
+            return Response::unauthorized('unauthorized', 'Failed!');
+        }
+
+        $user = User::whereEmail($socialUser->email)->first();
+
+        if (!$user) {
+            $user = CreateUser::invoke([
+                'email' => $socialUser->email,
+                'name' => $socialUser->name,
+                'password' => substr(md5(time()), 0, 12),
+                'email_verified_at' => Carbon::now()
+            ]);
+        } else {
+            if (!$user->hasVerifiedEmail()) {
+                $user->markEmailAsVerified();
+                event(new Verified($user));
+            }
+        }
+
+        $socialAccounts = $user->socialAccounts()->firstOrCreate([
+            'provider' => $provider
+        ], [
+            'social_id' => $socialUser->id
+        ]);
+
+        if ($socialAccounts) {
+            $token = auth()->login($user);
+            return $this->respondWithToken($token, $user);
+        }
     }
 }
