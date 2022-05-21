@@ -97,6 +97,15 @@ class LoginController extends Controller
             'url' => $url
         ]);
     }
+    protected function respondWithToken($token, $user)
+    {
+        return Response::ok([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => UserResource::make($user)
+        ]);
+    }
     public function socialLogin($provider)
     {
         $socialUser = Socialite::driver($provider)->stateless()->user();

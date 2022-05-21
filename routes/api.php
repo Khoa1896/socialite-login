@@ -20,6 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::get('social/{provider}/redirect', [LoginController::class, 'getSocialRedirect']);
+    Route::get('social/{provider}/redirect', [LoginController::class, 'getSocialRedirect'])->name('login.google');
     Route::get('social/{provider}/callback', [LoginController::class, 'socialLogin']);
 });
