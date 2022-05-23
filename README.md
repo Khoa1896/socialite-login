@@ -7,7 +7,7 @@ https://github.com/Khoa1896/socialite-login/tree/develop1
 
 ## Install composer packages
 ```
-$ cd laravel-socialite
+$ cd socialite-login
 $ composer install
 ```
 
